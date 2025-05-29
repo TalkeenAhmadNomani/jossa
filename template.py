@@ -1,57 +1,51 @@
 import os
-from pathlib import Path
 
-project_name = "src"
+project_structure = {
+    "config": ["config.yaml", "schema.yaml"],
+    "src": {
+        "api": ["__init__.py", "routes.py"],
+        "core": ["__init__.py", "compare.py"],
+        "services": ["__init__.py", "cutoff_service.py"],
+        "data_access": ["__init__.py", "mongo_handler.py"],
+        "logger": ["__init__.py", "logger.py"],
+        "exception": ["__init__.py", "custom_exception.py"],
+        "constants": ["__init__.py"],
+        "utils": ["__init__.py"],
+    }
+}
 
-list_of_files = [
-
-    f"{project_name}/__init__.py",
-    f"{project_name}/components/__init__.py",
-    f"{project_name}/components/data_ingestion.py",  
-    f"{project_name}/components/data_validation.py",
-    f"{project_name}/components/data_transformation.py",
-    f"{project_name}/components/model_trainer.py",
-    f"{project_name}/components/model_evaluation.py",
-    f"{project_name}/components/model_pusher.py",
-    f"{project_name}/configuration/__init__.py",
-    f"{project_name}/configuration/mongo_db_connection.py",
-    f"{project_name}/configuration/aws_connection.py",
-    f"{project_name}/cloud_storage/__init__.py",
-    f"{project_name}/cloud_storage/aws_storage.py",
-    f"{project_name}/data_access/__init__.py",
-    f"{project_name}/data_access/proj1_data.py",
-    f"{project_name}/constants/__init__.py",
-    f"{project_name}/entity/__init__.py",
-    f"{project_name}/entity/config_entity.py",
-    f"{project_name}/entity/artifact_entity.py",
-    f"{project_name}/entity/estimator.py",
-    f"{project_name}/entity/s3_estimator.py",
-    f"{project_name}/exception/__init__.py",
-    f"{project_name}/logger/__init__.py",
-    f"{project_name}/pipline/__init__.py",
-    f"{project_name}/pipline/training_pipeline.py",
-    f"{project_name}/pipline/prediction_pipeline.py",
-    f"{project_name}/utils/__init__.py",
-    f"{project_name}/utils/main_utils.py",
+base_files = [
     "app.py",
     "requirements.txt",
     "Dockerfile",
     ".dockerignore",
-    "demo.py",
-    "setup.py",
-    "pyproject.toml",
-    "config/model.yaml",
-    "config/schema.yaml",
+    ".gitignore",
+    "README.md"
 ]
 
+def create_file(path):
+    with open(path, "w") as f:
+        pass
 
-for filepath in list_of_files:
-    filepath = Path(filepath)
-    filedir, filename = os.path.split(filepath)
-    if filedir != "":
-        os.makedirs(filedir, exist_ok=True)
-    if (not os.path.exists(filepath)) or (os.path.getsize(filepath) == 0):
-        with open(filepath, "w") as f:
-            pass
-    else:
-        print(f"file is already present at: {filepath}")
+def create_structure(base_path="."):
+    for folder, content in project_structure.items():
+        folder_path = os.path.join(base_path, folder)
+        os.makedirs(folder_path, exist_ok=True)
+
+        if isinstance(content, list):
+            for file in content:
+                create_file(os.path.join(folder_path, file))
+        elif isinstance(content, dict):
+            for subfolder, files in content.items():
+                subfolder_path = os.path.join(folder_path, subfolder)
+                os.makedirs(subfolder_path, exist_ok=True)
+                for file in files:
+                    create_file(os.path.join(subfolder_path, file))
+
+    for file in base_files:
+        create_file(os.path.join(base_path, file))
+
+    print("✅ Project template created successfully!")
+
+if __name__ == "__main__":
+    create_structure()
