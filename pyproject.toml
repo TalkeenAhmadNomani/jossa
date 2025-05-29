@@ -1,0 +1,11 @@
+[project]
+name = "src"
+version = "0.0.1"
+description = " jossa web portal for easy counselling "
+authors = [{name = "Talkeen Ahmad Nomani", email = "talkeennomani@gmail.com"}]
+
+[tool.setuptools]
+packages = {find = {}}
+
+[tool.setuptools.dynamic]
+dependencies = {file = "requirements.txt"}
